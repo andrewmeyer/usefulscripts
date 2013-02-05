@@ -1,0 +1,12 @@
+#! /bin/bash
+#passive check that finds the current population on a killingfloor server
+#if the server is not running, it should return a WARN that the server
+#is not running AND a population of 0 as perf data
+
+#will need a way to count and separate kserver instances
+#needs to check last entry into the log that is an announcement and take
+#the current population.  if it is not an announcement, it should
+#check again....or find some way to use regex and process
+#the last several lines.
+
+#tail -n 1 /var/log/killingfloor/kserverX.log
