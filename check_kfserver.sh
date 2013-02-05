@@ -1,3 +1,6 @@
+#Written by Andrew Meyer for NGC
+#Public Release Authorized
+
 #! /bin/bash
 
 LOGDIR=/home/gameservers/steamgames/killingfloor/System/logs
@@ -23,18 +26,11 @@ fi
 
 LOG=`cat $LOGDIR/$LOGBASE$NUM.log | grep "Sending updated" | tail -n 1`
 LOAD=`echo "$LOG" | cut -d ' ' -f 15`
-#echo $LOG
-#echo $LOAD
 
 #fix the random missing log errors
 if [ -z "$LOAD" ]; then
-#	echo "bad last entry, trying previous..."
 	LOG=`cat $LOGDIR/$LOGBASE$NUM.log | grep "Sending updated" | tail -n 2 | head -n 1`
 	LOAD=`echo "$LOG" | cut -d ' ' -f 15`
-#	echo $LOG
-#	echo $LOAD
-#	echo "WARNING: bad log, last known: $LOAD users | users=$LOAD;$WARN;$CRIT;$MIN;$MAX"
-#	exit 1
 fi
 
 #this is what should happen
