@@ -41,7 +41,3 @@ else
 	echo "WARNING: PID Found,Garbled logs | users=$MIN;$WARN;$CRIT;$MIN;$MAX"
 	exit 1
 fi
-
-#Log: STEAMAUTH : Sending updated server details - NodNetwork Floor of killing [Chicago] OPEN 6 | 6
-# echo "Log: STEAMAUTH : Sending updated server details - NodNetwork Floor of killing [Chicago] OPEN 1 | 6" | cut -d ' ' -f 15
-#echo "WARNING: ${MEM_USEDM}MB | memory=${MEM_USEDM}MB;2000;2800;0;3072"
