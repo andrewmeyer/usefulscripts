@@ -1,0 +1,63 @@
+#! /bin/bash
+#this program checks for updates and then notifies nagios
+HOST=192.168.1.121
+PORT=5667
+DELIM=^
+CONFIG=/etc/send_nsca.cfg
+NSCA=/usr/sbin/send_nsca
+SV_DESC="Update Watchdog"
+IP=`/bin/SNOP.sh eth0`
+
+#Usage: send_nsca -H <host_address> [-p port] [-to to_sec] [-d delim] [-c config_file]
+REPORT="$NSCA -H $HOST -p $PORT -d $DELIM -c $CONFIG"
+CHECK=/usr/lib/nagios/plugins/check_debian_packages
+
+
+#Options:
+# <host_address> = The IP address of the host running the NSCA daemon
+# [port]         = The port on which the daemon is running - default is 5667
+# [to_sec]       = Number of seconds before connection attempt times out.
+#                  (default timeout is 10 seconds)
+# [delim]        = Delimiter to use when parsing input (defaults to a tab)
+# [config_file]  = Name of config file to use
+APT=/usr/bin/aptitude
+
+if [ ! -x "$CHECK" ]; then
+        echo "FATAL: $CHECK cannot be found or is not executable!"
+        exit 5
+fi
+
+if [ ! -x /bin/SNOP.sh ];then
+        echo "FATAL: WHERE ARE MY HANDS?"
+        exit 5
+fi
+
+if [ ! -x "$NSCA" ]; then
+        echo "FATAL: $NSCA cannot be found or is not executable!"
+        exit 5
+fi
+
+if [ ! -x "$APT" ]; then
+        echo "FATAL: $APT cannot be found or is not executable!"
+        exit 5
+fi
+
+##see if we are running as root
+if [ `whoami` != "root" ] ;then
+        echo "SCRIPT MUST BE RUN AS ROOT"
+        exit 5
+fi
+
+$APT update> /dev/null 2>&1
+
+###running the check and grabing the result and exit code
+OUTPUT=`$CHECK`
+RETC=$?
+
+###ACUTALL UPLOAD
+RESULT=$IP$DELIM$SV_DESC$DELIM$RETC$DELIM$OUTPUT
+#<host_name>[tab]<svc_description>[tab]<return_code>[tab]<plugin_output>[newline]
+echo ""
+echo "`date`"
+echo "$RESULT"
+echo "$RESULT" | $REPORT
