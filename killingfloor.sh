@@ -2,7 +2,8 @@
 #control script for killingfloor, woot
 #written by: Drew Meyer for NGC
 
-#start:stop:restart:update:[stats]
+#start:stop:restart:update:status:sync:[stats]
+#needs: check_kfserver for status command
 
 GAMEDIR=/home/gameservers/steamgames/killingfloor
 STEAM=/home/gameservers/steamcmd/steam.sh
