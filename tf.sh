@@ -70,6 +70,7 @@ game_start() {
 	fi
 	cd $GAMEDIR/System
 	echo "Starting server $SERVER..."
+#NATURALLY THIS STARTS KILLINGFLOOR NOT TF2, JUST DEAL WITH IT FOR NOW
 	`screen -dmS kf$SERVER ./ucc-bin server KF-farm.rom?game=KFmod.KFGameType?VACSecured=true?MaxPlayers=6?log=logs/$PIDNAME$SERVER.log -nohomedir ini=KillingFloor$SERVER.ini`
 	game_makePID > $PIDDIR/$PIDNAME$SERVER.pid
 	sleep 15

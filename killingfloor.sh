@@ -4,6 +4,8 @@
 
 #start:stop:restart:update:status:sync:[stats]
 #needs: check_kfserver for status command
+#needs: rsync
+#needs: screen
 
 GAMEDIR=/home/gameservers/steamgames/killingfloor
 STEAM=/home/gameservers/steamcmd/steam.sh
@@ -19,6 +21,15 @@ STATUSCHECK=/usr/lib/nagios/plugins/check_kfserver
 USERWARN=6
 USERCRIT=6
 
+if [ ! -x screen ] ;then
+        echo "FATAL: screen is either not installed or you cannot run it"
+        exit 2
+fi
+
+if [ ! -x rsync ] ;then
+        echo "FATAL: Rsync is either not installed or you cannot run it"
+        exit 2
+fi
 
 if [ ! -x $STEAM ] ;then
         echo "FATAL: $STEAM does not exist or is not executable"
@@ -33,6 +44,7 @@ if [ ! -r $STEAM ] ;then
 #else
 #        echo "$GAME located"
 fi
+
 if [ ! -d $GAMEDIR ]; then
 	echo "FATAL: $GAMEDIR does not exist or is not a directory"
 	exit 2

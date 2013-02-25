@@ -3,16 +3,29 @@
 #Needs: zip
 #Needs: git
 
-#write dependency check for zip later
-
-#write dependency check for git later
+if [ ! -x zip ] ;then
+        echo "FATAL: Zip does not appear to be installed or you cannot run it"
+        exit 2
+fi
+fi
+if [ ! -x git ] ;then
+        echo "FATAL: Git does not appear to be installed or you cannot run it"
+        exit 2
+fi
 
 GITDIR=/home/scmeyer/github/nodpak/
-ZIPFILE=/home/ftp/tekkit/nodpak2.zip
+ZIPFILE=/home/ftp/minecraft/nodpak2.zip
 MAKEPATCH=false
-#write dependency check for GITDIR later
 
-#write dependency check for ZIPFILE later
+if [ ! -d $GITDIR ] ;then
+        echo "FATAL: $GITDIR does not exist or is not readable"
+        exit 2
+fi
+		
+if [ ! -w $ZIPFILE ] ;then
+        echo "FATAL: $ZIPFILE does not exist or is not writable"
+        exit 2
+fi
 
 cd $GITDIR
 echo "starting sync"
