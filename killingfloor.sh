@@ -8,7 +8,7 @@
 #needs: screen
 
 GAMEDIR=/home/gameservers/steamgames/killingfloor
-STEAM=/home/gameservers/steamcmd/steam.sh
+STEAM=/home/gameservers/steamcmd/steamcmd.sh
 PROC=ucc-bin-real
 GAME=/home/gameservers/steamcmd/killingfloor.steam
 ACTION=$1
@@ -21,12 +21,12 @@ STATUSCHECK=/usr/lib/nagios/plugins/check_kfserver
 USERWARN=6
 USERCRIT=6
 
-if [ ! -x screen ] ;then
+if [ ! -x /usr/bin/screen ] ;then
         echo "FATAL: screen is either not installed or you cannot run it"
         exit 2
 fi
 
-if [ ! -x rsync ] ;then
+if [ ! -x /usr/bin/rsync ] ;then
         echo "FATAL: Rsync is either not installed or you cannot run it"
         exit 2
 fi
@@ -103,12 +103,12 @@ NOW=1
    echo $NOW of $MAX...$MAP
    THISMD5=`md5sum ../Maps/$MAP`
    ARCHIVEMD5=`cat /home/gameservers/.killingfloor/Maps/$MAP.md5`
-   if [ "$THISMD5" != "$ARCHIVEMD5" ] ; then
+   if [ "$THISMD5" = "$ARCHIVEMD5" ] ; then
+           echo "md5 hash is identical, skipping"
+        else
            echo "md5 hash mismatch, recompressing"
            ./ucc-bin compress  ../Maps/$MAP
            md5sum ../Maps/$MAP > /home/gameservers/.killingfloor/Maps/$MAP.md5
-        else
-           echo "md5 is identical, skipping"
    fi
  NOW=$[$NOW+1]
 done
