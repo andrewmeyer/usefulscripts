@@ -30,9 +30,9 @@ CPU_COUNT=4
 INVOCATION="java -Xmx2048M -Xms2048M -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=$CPU_COUNT -XX:+AggressiveOpts -jar $SERVICE $OPTIONS"
 
 AUTOBAK_PATH="/home/gameservers/sgrub/autobak.py"
-AUTOBAK_INTERVAL=15
-AUTOBAK_ENABLED=".IF I HATE MYSELF SO MUCH, THEN WHY DON'T I HATEMARRY MYSELF?"
-AUTOBAK_SCRIPT="/etc/init.d/sgrub" #autobak is hardcoded to call the BACKUP argument, currently
+AUTOBAK_INTERVAL=30
+AUTOBAK_ENABLED="IF I HATE MYSELF SO MUCH, THEN WHY DON'T I HATEMARRY MYSELF?"
+AUTOBAK_SCRIPT="/bin/sgrub" #autobak is hardcoded to call the BACKUP argument, currently
 
 #accept world name or use default value
 #if [ -z "$2" ]; then
