@@ -21,6 +21,11 @@ STATUSCHECK=/usr/lib/nagios/plugins/check_kfserver
 USERWARN=6
 USERCRIT=6
 
+#Remote sync vars
+REMOTE_NAME=ftpuser
+REMOTE_KEY=/home/gameservers/.ssh/ftpuser.key
+ARCHIVE_DIR=/home/gameservers/.killingfloor/Maps
+
 if [ ! -x /usr/bin/screen ] ;then
         echo "FATAL: screen is either not installed or you cannot run it"
         exit 2
@@ -34,15 +39,13 @@ fi
 if [ ! -x $STEAM ] ;then
         echo "FATAL: $STEAM does not exist or is not executable"
         exit 2
-#else
-#        echo "$STEAM located and is executable"
+
 fi
 
 if [ ! -r $STEAM ] ;then
         echo "FATAL: Cannot find config at $GAME"
         exit 2
-#else
-#        echo "$GAME located"
+
 fi
 
 if [ ! -d $GAMEDIR ]; then
@@ -89,9 +92,8 @@ game_update() {
 }
 
 game_sync() {
-        echo "beginning map checks"
-#        $GAMEDIR/System/compress.sh
-cd /home/gameservers/steamgames/killingfloor/System/
+echo "beginning map checks"
+cd $GAMEDIR/System/
 COUNT=`ls ../Maps/ | grep "rom" | wc`
 echo $COUNT
 MAX=`echo $COUNT | cut -d ' ' -f 1`
@@ -102,19 +104,19 @@ NOW=1
    MAP=`ls ../Maps/ | grep "rom" | head -n $NOW | tail -n 1`
    echo $NOW of $MAX...$MAP
    THISMD5=`md5sum ../Maps/$MAP`
-   ARCHIVEMD5=`cat /home/gameservers/.killingfloor/Maps/$MAP.md5`
+   ARCHIVEMD5=`cat $ARCHIVE_DIR/$MAP.md5`
    if [ "$THISMD5" = "$ARCHIVEMD5" ] ; then
            echo "md5 hash is identical, skipping"
         else
            echo "md5 hash mismatch, recompressing"
            ./ucc-bin compress  ../Maps/$MAP
-           md5sum ../Maps/$MAP > /home/gameservers/.killingfloor/Maps/$MAP.md5
+           md5sum ../Maps/$MAP > $ARCHIVE_DIR/$MAP.md5
    fi
  NOW=$[$NOW+1]
 done
 
 echo "scanning and updating remote files..."
-rsync -e 'ssh -i /home/gameservers/.ssh/ftpuser.key -l ftpuser' -v /home/gameservers/.killingfloor/Maps/*uz2 files.nodnetwork.org:/home/ftp/kfmaps/
+rsync -e 'ssh -i $REMOTE_KEY -l $REMOTE_NAME' -v /home/gameservers/.killingfloor/Maps/*uz2 files.nodnetwork.org:/home/ftp/kfmaps/
 echo ""
 echo ""
 echo "map compression and updating completed"
@@ -129,16 +131,15 @@ game_start() {
 	else
 	        echo "PID file for $NAME server $SERVER already exists!"
 	        echo "Having multiple instances of UT servers will create
-		conflicts of epic proportions.  Terminate existing instance? (y/n/[Ctrl+C
+		conflicts of epic proportions.  Terminate existing instance? (y/N/[Ctrl+C
 		to abort]):"
 	        read input
-        	if [ "$input" == "y" ]; then
-                	echo "Terminating instance(s)"
-	                kill `cat $PIDDIR/kfserver$SERVER.pid`
-			rm $PIDDIR/kfserver$SERVER.pid
+				if [ ! "$input" == "y" ]; then
+				echo "Not Terminating. I hope you have a segfault bunker!"
         	else
-                	echo "Not Terminating. I hope you have a segfault
-			bunker!"
+               	echo "Terminating instance(s)"
+	            kill `cat $PIDDIR/kfserver$SERVER.pid`
+				rm $PIDDIR/kfserver$SERVER.pid
 	        fi
 	fi
 	cd $GAMEDIR/System
@@ -179,7 +180,7 @@ game_stop() {
 					echo "Aborting, good call..."
 					sleep 1
 					exit 1
-                		fi
+                fi
 		fi
                 echo "Stopping $NAME server $SERVER..."
 		PID=`cat $PIDDIR/kfserver$SERVER.pid`
