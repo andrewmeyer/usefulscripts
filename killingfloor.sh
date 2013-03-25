@@ -25,6 +25,9 @@ USERCRIT=6
 REMOTE_NAME=ftpuser
 REMOTE_KEY=/home/gameservers/.ssh/ftpuser.key
 ARCHIVE_DIR=/home/gameservers/.killingfloor/Maps
+SYNC_CMD="ssh -i $REMOTE_KEY -l $REMOTE_NAME"
+SYNC_LOCAL=/home/gameservers/.killingfloor/Maps/
+SYNC_REMOTE=files.nodnetwork.org:/home/ftp/kfmaps/
 
 if [ ! -x /usr/bin/screen ] ;then
         echo "FATAL: screen is either not installed or you cannot run it"
@@ -116,7 +119,7 @@ NOW=1
 done
 
 echo "scanning and updating remote files..."
-rsync -e 'ssh -i $REMOTE_KEY -l $REMOTE_NAME' -v /home/gameservers/.killingfloor/Maps/*uz2 files.nodnetwork.org:/home/ftp/kfmaps/
+rsync -e "$SYNC_CMD" -v $SYNC_LOCAL/*uz2 $SYNC_REMOTE
 echo ""
 echo ""
 echo "map compression and updating completed"
