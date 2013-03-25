@@ -1,5 +1,5 @@
 #! /bin/sh
-#this script makes it easier to start a TF2 server, later versions can take paramaters to customize
+#this script makes it easier to start a Garrys Mod server, later versions can take paramaters to customize
 #SCRDS_RUN= /home/gameservers/tf/orangebox/srcds_run
 
 cd /home/gameservers/garrysmod/orangebox/
