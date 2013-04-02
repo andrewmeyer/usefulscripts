@@ -11,6 +11,7 @@ MIN=0
 WARN=$2
 CRIT=$3
 MAX=6
+PID=`cat $PIDDIR/$LOGBASE$NUM.pid`
 
 #see if game is even running
 if [ ! -s $PIDDIR/$LOGBASE$NUM.pid ]; then
@@ -31,6 +32,13 @@ LOAD=`echo "$LOG" | cut -d ' ' -f 15`
 if [ -z "$LOAD" ]; then
 	LOG=`cat $LOGDIR/$LOGBASE$NUM.log | grep "Sending updated" | tail -n 2 | head -n 1`
 	LOAD=`echo "$LOG" | cut -d ' ' -f 15`
+fi
+
+#predictive failure check
+PIDINFO=`ps -e | grep "$PID"`
+if [ -z "$PIDINFO" ]; then
+	echo "WARNING: Predictive Failure Detected | users=$MIN;$WARN;$CRIT;$MIN;$MAX"
+	exit 1
 fi
 
 #this is what should happen
