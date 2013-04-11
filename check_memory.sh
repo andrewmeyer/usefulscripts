@@ -1,5 +1,20 @@
 #!/bin/sh
 
+#
+# Check_memory.sh
+# Provides a way for Nagios to closely estimate the current memory usage of a server.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+
+
 if [ ! -e /proc/meminfo ]; then
 	echo "FATAL: Cannot open /proc/meminfo"
 	exit 3
@@ -12,23 +27,15 @@ MEM_CACHED=`awk '/Cached/ { print $2 }' /proc/meminfo | head -1`
 WARN=8192
 CRIT=10240
 
-#echo "T= $MEM_TOTAL"
-#echo "F1= $MEM_FREE"
-#echo "C= $MEM_CACHED"
 #Cache Adjust
 MEM_FREE=`expr $MEM_FREE + $MEM_CACHED`
 
-#echo "F2= $MEM_FREE"
-
 MEM_USED=`expr $MEM_TOTAL - $MEM_FREE`
 MEM_USEDM=`expr $MEM_USED / 1024`
-#MEMINFO=$(</proc/meminfo)
 
 #calculate total MB
 MEM_TOTALM=`expr $MEM_TOTAL / 1024`
 
-#echo "U1= $MEM_USED"
-#echo "U2= $MEM_USEDM"
 if [ $MEM_USEDM -ge $CRIT ]; then
 	echo "CRITICAL: ${MEM_USEDM}MB | memory=${MEM_USEDM}MB;$WARN;$CRIT;0;$MEM_TOTALM"
 	exit 2
@@ -39,6 +46,4 @@ else
 	echo "OK: ${MEM_USEDM}MB | memory=${MEM_USEDM}MB;$WARN;$CRIT;0;$MEM_TOTALM"
 	exit 0
 fi
-#MemTotal:       524288 kB
-#MemFree:        311064 kB
 exit 4

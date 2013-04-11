@@ -1,11 +1,32 @@
 #! /bin/bash
-#control script for killingfloor, woot
-#written by: Drew Meyer for NGC
+
+# killingfloor.sh
+# Control script for KillingFloor, permits the user to perform many tasks with the server. 
+#
+# Copyright (c) 2013 Andrew Meyer <ameyer+secure@nodnetwork.org>
+#
+#
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+
 
 #start:stop:restart:update:status:sync:[stats]
 #needs: check_kfserver for status command
 #needs: rsync
 #needs: screen
+#needs: SteamCMD installed and a config script made for the game
 
 GAMEDIR=/home/gameservers/steamgames/killingfloor
 STEAM=/home/gameservers/steamcmd/steamcmd.sh
