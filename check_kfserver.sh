@@ -56,8 +56,8 @@ fi
 #predictive failure check
 PIDINFO=`ps -e | grep "$PID"`
 if [ -z "$PIDINFO" ]; then
-	echo "WARNING: Predictive Failure Detected | users=$MIN;$WARN;$CRIT;$MIN;$MAX"
-	exit 1
+	echo "CRITICAL: Predictive Failure Detected | users=$MIN;$WARN;$CRIT;$MIN;$MAX"
+	exit 3
 fi
 
 #this is what should happen
