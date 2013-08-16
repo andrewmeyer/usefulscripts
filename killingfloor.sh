@@ -140,7 +140,7 @@ NOW=1
 done
 
 echo "scanning and updating remote files..."
-rsync -e "$SYNC_CMD" -v $SYNC_LOCAL/*uz2 $SYNC_REMOTE
+rsync -e "$SYNC_CMD" -v $SYNC_LOCAL/*uz2 $SYNC_REMOTE --progress
 echo ""
 echo ""
 echo "map compression and updating completed"
