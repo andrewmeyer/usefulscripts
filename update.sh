@@ -42,8 +42,8 @@ else
 		sleep 1
 fi
 
-STEAM=/home/gameservers/steam
-cd /home/gameservers/
+STEAM=/home/gameservers/hlds/steam
+cd /home/gameservers/steamgames/
 
 #check is the steam process is where we think it is
 if [ ! -x "$STEAM" ]; then
