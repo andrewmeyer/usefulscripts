@@ -17,7 +17,7 @@ WARN%=$1
 CRIT%=$2
 
 if [ ! -e /proc/meminfo ]; then
-	echo "FATAL: Cannot open /proc/meminfo | memory=0;0;0;0;0"
+	echo "FATAL: Cannot open /proc/meminfo"
 	exit 3
 fi
 
@@ -25,6 +25,7 @@ MEM_TOTAL=`awk '/MemTotal/ { print $2 }' /proc/meminfo`
 MEM_FREE=`awk '/MemFree/ { print $2 }' /proc/meminfo`
 MEM_CACHED=`awk '/Cached/ { print $2 }' /proc/meminfo | head -1`
 
+<<<<<<< HEAD
 #give default WARNL and CRITL
 if [ -n "$WARN%" ]; then
 	WARNL=0.6
@@ -38,6 +39,10 @@ else
 	CRITL= `expr $CRIT% / 100`
 fi
 
+=======
+WARN=8192
+CRIT=10240
+>>>>>>> parent of 5d6d65f... allows passing of warn and crit variables
 
 #Cache Adjust
 MEM_FREE=`expr $MEM_FREE + $MEM_CACHED`
@@ -47,15 +52,6 @@ MEM_USEDM=`expr $MEM_USED / 1024`
 
 #calculate total MB
 MEM_TOTALM=`expr $MEM_TOTAL / 1024`
-
-#calculate WARN
-WARN=1
-WARN= `expr $MEM_TOTALM * WARNL`
-
-#calculate CRIT
-CRIT=1
-CRIT= `expr $MEM_TOTAL * CRITL`
-
 
 if [ $MEM_USEDM -ge $CRIT ]; then
 	echo "CRITICAL: ${MEM_USEDM}MB | memory=${MEM_USEDM}MB;$WARN;$CRIT;0;$MEM_TOTALM"
