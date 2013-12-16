@@ -13,7 +13,8 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-
+WARN%=$1
+CRIT%=$2
 
 if [ ! -e /proc/meminfo ]; then
 	echo "FATAL: Cannot open /proc/meminfo | memory=0;0;0;0;0"
@@ -25,10 +26,10 @@ MEM_FREE=`awk '/MemFree/ { print $2 }' /proc/meminfo`
 MEM_CACHED=`awk '/Cached/ { print $2 }' /proc/meminfo | head -1`
 
 #give default WARNL and CRITL
-if [ -n "$1" ]; then
+if [ -n "$WARN%" ]; then
 	WARNL=0.6
 else
-	WARNL= `expr $1 / 100`
+	WARNL= `expr $CRIT% / 100`
 fi
 
 if [ -n "$1" ]; then
