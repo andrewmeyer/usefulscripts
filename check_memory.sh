@@ -16,7 +16,7 @@
 
 
 if [ ! -e /proc/meminfo ]; then
-	echo "FATAL: Cannot open /proc/meminfo"
+	echo "FATAL: Cannot open /proc/meminfo | memory=0;0;0;0;0"
 	exit 3
 fi
 
@@ -24,8 +24,19 @@ MEM_TOTAL=`awk '/MemTotal/ { print $2 }' /proc/meminfo`
 MEM_FREE=`awk '/MemFree/ { print $2 }' /proc/meminfo`
 MEM_CACHED=`awk '/Cached/ { print $2 }' /proc/meminfo | head -1`
 
-WARN=8192
-CRIT=10240
+#give default WARNL and CRITL
+if [ -n "$1" ]; then
+	WARNL=0.6
+else
+	WARNL= `expr $1 / 100`
+fi
+
+if [ -n "$1" ]; then
+	CRITL=0.8
+else
+	CRITL= `expr $2 / 100`
+fi
+
 
 #Cache Adjust
 MEM_FREE=`expr $MEM_FREE + $MEM_CACHED`
@@ -35,6 +46,15 @@ MEM_USEDM=`expr $MEM_USED / 1024`
 
 #calculate total MB
 MEM_TOTALM=`expr $MEM_TOTAL / 1024`
+
+#calculate WARN
+WARN=1
+WARN= `expr $MEM_TOTALM * WARNL`
+
+#calculate CRIT
+CRIT=1
+CRIT= `expr $MEM_TOTAL * CRITL`
+
 
 if [ $MEM_USEDM -ge $CRIT ]; then
 	echo "CRITICAL: ${MEM_USEDM}MB | memory=${MEM_USEDM}MB;$WARN;$CRIT;0;$MEM_TOTALM"
