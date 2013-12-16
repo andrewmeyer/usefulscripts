@@ -29,13 +29,13 @@ MEM_CACHED=`awk '/Cached/ { print $2 }' /proc/meminfo | head -1`
 if [ -n "$WARN%" ]; then
 	WARNL=0.6
 else
-	WARNL= `expr $CRIT% / 100`
+	WARNL= `expr $WARN$ / 100`
 fi
 
-if [ -n "$1" ]; then
+if [ -n "$CRIT%" ]; then
 	CRITL=0.8
 else
-	CRITL= `expr $2 / 100`
+	CRITL= `expr $CRIT% / 100`
 fi
 
 
