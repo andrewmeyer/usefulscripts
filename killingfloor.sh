@@ -3,7 +3,7 @@
 # killingfloor.sh
 # Control script for KillingFloor, permits the user to perform many tasks with the server. 
 #
-# Copyright (c) 2013 Andrew Meyer <ameyer+secure@nodnetwork.org>
+# Copyright (c) 2014 Andrew Meyer <ameyer+secure@nodnetwork.org>
 #
 #
 #
