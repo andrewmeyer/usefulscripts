@@ -3,7 +3,7 @@
 # Check_kfserver.sh
 # provides a way for Nagios to pull the status and user load of a given KillingFloor server.
 #
-# Copyright (c) 2013 Andrew Meyer <ameyer+secure@nodnetwork.org>
+# Copyright (c) 2014 Andrew Meyer <ameyer+secure@nodnetwork.org>
 #
 #
 #
