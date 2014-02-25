@@ -89,7 +89,7 @@ echo "$NAME $SERVER: $RETURN"
 }
 
 function showBar {
- percDone=$(echo 'scale=2;'$1/$2*100 | bc)
+ percDone=$(echo 'scale=2;'$1/$2*80 | bc)
  barLen=$(echo ${percDone%'.00'})
  bar=''
  fills=''
@@ -97,7 +97,7 @@ function showBar {
  do
   bar=$bar"="
  done
- blankSpaces=$(echo $((100-$barLen)))
+ blankSpaces=$(echo $((80-$barLen)))
  for (( f=0; f<$blankSpaces; f++ ))
  do
   fills=$fills"_"
