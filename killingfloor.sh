@@ -60,31 +60,31 @@ if [ ! -x /usr/bin/rsync ] ;then
         exit 2
 fi
 
-if [ ! -x $STEAM ] ;then
+if [ ! -x ${STEAM} ] ;then
         echo "FATAL: $STEAM does not exist or is not executable"
         exit 2
 
 fi
 
-if [ ! -r $STEAM ] ;then
+if [ ! -r ${STEAM} ] ;then
         echo "FATAL: Cannot find config at $GAME"
         exit 2
 
 fi
 
-if [ ! -d $GAMEDIR ]; then
+if [ ! -d ${GAMEDIR} ]; then
 	echo "FATAL: $GAMEDIR does not exist or is not a directory"
 	exit 2
 fi
 
 game_makePID() {
 INFO=`ps -A | grep "$PROC" | tail -n 1`
-PID=`echo $INFO | cut -d ' ' -f 1`
-echo $PID
+PID=`echo ${INFO} | cut -d ' ' -f 1`
+echo ${PID}
 }
 
 game_status() {
-RETURN=`$STATUSCHECK $SERVER $USERWARN $USERCRIT`
+RETURN=`${STATUSCHECK} ${SERVER} ${USERWARN} ${USERCRIT}`
 echo "$NAME $SERVER: $RETURN"
 }
 
@@ -95,21 +95,21 @@ function showBar {
  fills=''
  for (( b=0; b<$barLen; b++ ))
  do
-  bar=$bar"="
+  bar=${bar}"="
  done
  blankSpaces=$(echo $((80-$barLen)))
  for (( f=0; f<$blankSpaces; f++ ))
  do
-  fills=$fills"_"
+  fills=${fills}"_"
  done
- echo -ne '['$bar'>'$fills'] - '$barLen'%\r'
+ echo -ne '['${bar}'>'${fills}'] - '${barLen}'%\r'
 }
 
 game_update() {
 	echo "beginning update process..."
 	sleep 2
 
-	$STEAM +runscript $GAME
+	${STEAM} +runscript ${GAME}
 
 	echo "Update process has completed"
 	echo ""
@@ -117,30 +117,30 @@ game_update() {
 
 game_sync() {
 echo "beginning map checks"
-cd $GAMEDIR/System/
+cd ${GAMEDIR}/System/
 COUNT=`ls ../Maps/ | grep "rom" | wc`
-echo $COUNT
-MAX=`echo $COUNT | cut -d ' ' -f 1`
-echo $MAX
+echo ${COUNT}
+MAX=`echo ${COUNT} | cut -d ' ' -f 1`
+echo ${MAX}
 
 NOW=1
-   while [ $NOW -le $MAX ]; do
-   MAP=`ls ../Maps/ | grep "rom" | head -n $NOW | tail -n 1`
-   echo $NOW of $MAX...$MAP
-   THISMD5=`md5sum ../Maps/$MAP`
-   ARCHIVEMD5=`cat $ARCHIVE_DIR/$MAP.md5`
+   while [ ${NOW} -le ${MAX} ]; do
+   MAP=`ls ../Maps/ | grep "rom" | head -n ${NOW} | tail -n 1`
+   echo ${NOW} of ${MAX}...${MAP}
+   THISMD5=`md5sum ../Maps/${MAP}`
+   ARCHIVEMD5=`cat ${ARCHIVE_DIR}/${MAP}.md5`
    if [ "$THISMD5" = "$ARCHIVEMD5" ] ; then
            echo "md5 hash is identical, skipping"
         else
            echo "md5 hash mismatch, recompressing"
-           ./ucc-bin compress  ../Maps/$MAP
-           md5sum ../Maps/$MAP > $ARCHIVE_DIR/$MAP.md5
+           ./ucc-bin compress  ../Maps/${MAP}
+           md5sum ../Maps/${MAP} > ${ARCHIVE_DIR}/${MAP}.md5
    fi
  NOW=$[$NOW+1]
 done
 
 echo "scanning and updating remote files..."
-rsync -e "$SYNC_CMD" -v $SYNC_LOCAL/*uz2 $SYNC_REMOTE --progress
+rsync -e "$SYNC_CMD" -v ${SYNC_LOCAL}/*uz2 ${SYNC_REMOTE} --progress
 echo ""
 echo ""
 echo "map compression and updating completed"
@@ -149,8 +149,8 @@ echo "map compression and updating completed"
 
 game_start() {
 	echo "Detecting if $NAME server $SERVER is already running..."
-	ISRUNNING=`pidof $PROC`
-	if [ ! -s $PIDDIR/kfserver$SERVER.pid ]; then
+	ISRUNNING=`pidof ${PROC}`
+	if [ ! -s ${PIDDIR}/kfserver${SERVER}.pid ]; then
 	        echo "$NAME server $SERVER is not running."
 	else
 	        echo "PID file for $NAME server $SERVER already exists!"
@@ -162,18 +162,18 @@ game_start() {
 				echo "Not Terminating. I hope you have a segfault bunker!"
         	else
                	echo "Terminating instance(s)"
-	            kill `cat $PIDDIR/kfserver$SERVER.pid`
-				rm $PIDDIR/kfserver$SERVER.pid
+	            kill `cat ${PIDDIR}/kfserver${SERVER}.pid`
+				rm ${PIDDIR}/kfserver${SERVER}.pid
 	        fi
 	fi
-	cd $GAMEDIR/System
+	cd ${GAMEDIR}/System
 	echo "Starting server $SERVER..."
-	`screen -dmS kf$SERVER ./ucc-bin server KF-farm.rom?game=KFmod.KFGameType?VACSecured=true?MaxPlayers=6?log=logs/kfserver$SERVER.log -nohomedir ini=KillingFloor$SERVER.ini`
+	`screen -dmS kf${SERVER} ./ucc-bin server KF-farm.rom?game=KFmod.KFGameType?VACSecured=true?MaxPlayers=6?log=logs/kfserver${SERVER}.log -nohomedir ini=KillingFloor${SERVER}.ini`
 	sleep 1
-	game_makePID > $PIDDIR/kfserver$SERVER.pid
+	game_makePID > ${PIDDIR}/kfserver${SERVER}.pid
 	for (( i=0; i<=25; i++ ))
 	do
-		 showBar $i 25
+		 showBar ${i} 25
 		 sleep .5
 	done
 	echo ""
@@ -185,13 +185,13 @@ game_stop() {
 	echo "checking for running $NAME server..."
         sleep 1
 
-        if [ ! -s $PIDDIR/kfserver$SERVER.pid ]; then
+        if [ ! -s ${PIDDIR}/kfserver${SERVER}.pid ]; then
 		echo "No PID found for $NAME server $SERVER,"
 	else
 		echo "PID found for $NAME server $SERVER, checking load"
 		LOAD=`game_status | cut -d ' ' -f 8`
-		echo $LOAD
-		if [ $LOAD -eq 0 ]; then
+		echo ${LOAD}
+		if [ ${LOAD} -eq 0 ]; then
 			echo "$NAME server $SERVER appears empty,"
 		else
 			echo "WARNING:"
@@ -207,9 +207,9 @@ game_stop() {
                 fi
 		fi
                 echo "Stopping $NAME server $SERVER..."
-		PID=`cat $PIDDIR/kfserver$SERVER.pid`
-                kill $PID
-                rm $PIDDIR/kfserver$SERVER.pid
+		PID=`cat ${PIDDIR}/kfserver${SERVER}.pid`
+                kill ${PID}
+                rm ${PIDDIR}/kfserver${SERVER}.pid
 		sleep 2
 		echo "Shutdown completed..."
 		sleep 1
@@ -217,13 +217,13 @@ game_stop() {
 	echo ""
 }
 
-case $ACTION in
+case ${ACTION} in
 	start)
 		if [ -n "$SERVER" ]; then
 			game_start
 		else
 			SERVER=1
-			while [ $SERVER -le $MAX ]; do
+			while [ ${SERVER} -le ${MAX} ]; do
 				game_start
 				SERVER=$[$SERVER+1]
 			done
@@ -234,7 +234,7 @@ case $ACTION in
                         game_stop
                 else
                         SERVER=1
-                        while [ $SERVER -le $MAX ]; do
+                        while [ ${SERVER} -le ${MAX} ]; do
                                 game_stop
                                 SERVER=$[$SERVER+1]
                         done
@@ -246,7 +246,7 @@ case $ACTION in
 			game_start
                 else
                         SERVER=1
-                        while [ $SERVER -le $MAX ]; do
+                        while [ ${SERVER} -le ${MAX} ]; do
                                 game_stop
 				game_start
                                 SERVER=$[$SERVER+1]
@@ -255,7 +255,7 @@ case $ACTION in
 	;;
 	update)
                 SERVER=1
-                while [ $SERVER -le $MAX ]; do
+                while [ ${SERVER} -le ${MAX} ]; do
                       game_stop
                       SERVER=$[$SERVER+1]
                 done
@@ -272,7 +272,7 @@ case $ACTION in
                         game_status
                 else
                         SERVER=1
-                        while [ $SERVER -le $MAX ]; do
+                        while [ ${SERVER} -le ${MAX} ]; do
                                 game_status
                                 SERVER=$[$SERVER+1]
                         done
